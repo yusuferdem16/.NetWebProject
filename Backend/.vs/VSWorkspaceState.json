@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\WebAPI"
   ],
-  "SelectedNode": "\\NorthwindBackend.sln",
+  "SelectedNode": "\\WebAPI\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

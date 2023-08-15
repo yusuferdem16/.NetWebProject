@@ -10,12 +10,12 @@ namespace Entities.Concrete
     public class Parsel : IEntity
     {
         public int ParselId { get; set; }
-        public String Sehir { get; set; }
+        public String? Sehir { get; set; }
 
-        public String Ilce { get; set; }
+        public String? Ilce { get; set; }
 
-        public String Mahalle { get; set; }
+        public String? Mahalle { get; set; }
 
-        public String Wkt { get; set; }
+        public String? Wkt { get; set; }
     }
 }

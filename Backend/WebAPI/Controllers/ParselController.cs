@@ -1,10 +1,12 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class ParselController : ControllerBase
@@ -45,6 +47,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result.Message);
         }
+
         [HttpPost("update")]
         public IActionResult Update(Parsel parsel)
         {
@@ -54,6 +57,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result.Message);
         }
+
         [HttpPost("delete")]
         public IActionResult Delete(Parsel parsel)
         {

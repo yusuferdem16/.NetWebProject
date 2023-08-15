@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Entities\\Entities.csproj": {}
+    "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Entities\\Entities.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Core\\Core.csproj": {
+    "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Core\\Core.csproj",
+        "projectUniqueName": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Core\\Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Core\\Core.csproj",
+        "projectPath": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Core\\Core.csproj",
         "packagesPath": "C:\\Users\\yusuf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Core\\obj\\",
+        "outputPath": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\yusuf\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,9 +40,23 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational.Design": {
+              "target": "Package",
+              "version": "[1.1.6, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.10, )"
             }
           },
           "imports": [
@@ -65,14 +79,14 @@
         }
       }
     },
-    "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Entities\\Entities.csproj": {
+    "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Entities\\Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Entities\\Entities.csproj",
+        "projectUniqueName": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Entities\\Entities.csproj",
         "projectName": "Entities",
-        "projectPath": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Entities\\Entities.csproj",
+        "projectPath": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Entities\\Entities.csproj",
         "packagesPath": "C:\\Users\\yusuf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Entities\\obj\\",
+        "outputPath": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Entities\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\yusuf\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -89,8 +103,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Core\\Core.csproj": {
-                "projectPath": "C:\\Users\\yusuf\\Desktop\\belsis\\Backend\\Core\\Core.csproj"
+              "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Core\\Core.csproj": {
+                "projectPath": "C:\\Users\\yusuf\\PycharmProjects\\odoo15\\.NetWebProject\\Backend\\Core\\Core.csproj"
               }
             }
           }

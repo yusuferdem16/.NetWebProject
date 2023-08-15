@@ -109,6 +109,46 @@
       border-radius: 5px;
       background-color: #fff;
     }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    /* Düzenle ve Sil butonları için stil */
+    .edit-button,
+    .delete-button {
+      padding: 6px 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .delete-button {
+      background-color: #f44336;
+      margin-left: 5px;
+    }
+
+    /* Butonlara hover stil eklemek */
+    .edit-button:hover,
+    .delete-button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
 
@@ -136,7 +176,20 @@
       <option value="Polygon">Polygon</option>
     </select>
   </form>
-
+  <table>
+    <thead>
+      <tr>
+        <th>Geometri</th>
+        <th>Şehir</th>
+        <th>İlçe</th>
+        <th>Mahalle</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Verileri burada dinamik olarak ekleyeceksiniz -->
+    </tbody>
+  </table>
   <script src="https://cdn.jsdelivr.net/npm/elm-pep@1.0.6/dist/elm-pep.js"></script>
   <script type="module" src="main.js"></script>
 </body>

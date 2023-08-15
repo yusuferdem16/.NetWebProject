@@ -8,17 +8,21 @@ import Overlay from 'ol/Overlay.js';
 import XYZ from 'ol/source/XYZ.js';
 import { toLonLat } from 'ol/proj.js';
 import { toStringHDMS } from 'ol/coordinate.js';
-
+import WKT from 'ol/format/WKT.js';
+import $ from "jquery";
 
 const container = document.getElementById('popup');
-const content = document.getElementById('popup-content');
+const content = document.getElementById('hiddenDiv');
 const closer = document.getElementById('closeHiddenDiv');
+const saveParcel = document.getElementsByClassName('bottomButton');
 
 const raster = new TileLayer({
   source: new OSM(),
 });
 
-const source = new VectorSource();
+const format = new WKT();
+
+const source = new VectorSource()
 const vector = new VectorLayer({
   source: source,
   style: {
@@ -61,12 +65,12 @@ const map = new Map({
   overlays: [overlay],
   target: 'map',
   view: new View({
-    center: [-11000000, 4600000],
+    center: [0.0, -0.0],
     zoom: 4,
   }),
 });
 
-
+saveParcel.onclick
 
 const modify = new Modify({ source: source });
 map.addInteraction(modify);
@@ -74,7 +78,7 @@ map.addInteraction(modify);
 let draw, snap; // global so we can remove them later
 const typeSelect = document.getElementById('type');
 
-
+var lastDraw;
 function addInteractions() {
   draw = new Draw({
     source: source,
@@ -83,15 +87,45 @@ function addInteractions() {
 
   draw.addEventListener("drawend", function (event) {
     hiddenDiv.style.display = 'block';
-
+    lastDraw = event.feature;
+    var wkt = format.writeGeometry(event.feature.getGeometry());
+    var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
   });
 
+  $(document).on('click', '.bottomButton', function () {
+    var sehir = $("#placeholder1 textarea").val();
+    var ilce = $("#placeholder2 textarea").val();
+    var mahalle = $("#placeholder3 textarea").val();
+    var wkt = format.writeGeometry(lastDraw.getGeometry());
+    var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates;
 
+    var data = {
+      sehir: sehir,
+      ilce: ilce,
+      mahalle: mahalle,
+      wkt: wkt
+    };
+
+    $.ajax({
+      url: 'https://localhost:7269/api/parsel/add', // Post edilecek URL'yi buraya ekleyin
+      method: 'POST',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      success: function (response) {
+        console.log('Sunucudan gelen cevap:', response);
+      },
+      error: function (error) {
+        console.error('Hata oluştu:', error);
+      }
+    });
+    hiddenDiv.style.display = 'none';
+  });
 
   map.addInteraction(draw);
   snap = new Snap({ source: source });
   map.addInteraction(snap);
 }
+
 
 closer.onclick = function () {
   hiddenDiv.style.display = 'none';

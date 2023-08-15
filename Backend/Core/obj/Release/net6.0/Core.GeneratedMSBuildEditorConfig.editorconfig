@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Core
-build_property.ProjectDir = C:\Users\yusuf\Desktop\NorthwindBackend\Core\
+build_property.ProjectDir = C:\Users\yusuf\PycharmProjects\odoo15\.NetWebProject\Backend\Core\
