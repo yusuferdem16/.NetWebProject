@@ -86,7 +86,6 @@ function addInteractions() {
   draw.addEventListener("drawend", function (event) {
     hiddenDiv.style.display = 'block';
     lastDraw = event.feature;
-    var source = lastDraw.getGeometry().getCoordinates()
     var wkt = format.writeGeometry(event.feature.getGeometry());
     var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
   });
@@ -96,13 +95,12 @@ function addInteractions() {
     var ilce = $("#placeholder2 textarea").val();
     var mahalle = $("#placeholder3 textarea").val();
     var wkt = format.writeGeometry(lastDraw.getGeometry());
-    var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates;
 
     var data = {
       sehir: sehir,
       ilce: ilce,
       mahalle: mahalle,
-      wkt: transformedGeometry.toString()
+      wkt: wkt
     };
 
     $.ajax({
@@ -127,7 +125,7 @@ function addInteractions() {
 
 
 closer.onclick = function () {
-  source.clear()
+  source.removeFeature(lastDraw)
   hiddenDiv.style.display = 'none';
   closer.blur();
   return false;
