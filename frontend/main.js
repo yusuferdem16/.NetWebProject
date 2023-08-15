@@ -70,8 +70,6 @@ const map = new Map({
   }),
 });
 
-saveParcel.onclick
-
 const modify = new Modify({ source: source });
 map.addInteraction(modify);
 
@@ -88,6 +86,7 @@ function addInteractions() {
   draw.addEventListener("drawend", function (event) {
     hiddenDiv.style.display = 'block';
     lastDraw = event.feature;
+    var source = lastDraw.getGeometry().getCoordinates()
     var wkt = format.writeGeometry(event.feature.getGeometry());
     var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
   });
@@ -103,7 +102,7 @@ function addInteractions() {
       sehir: sehir,
       ilce: ilce,
       mahalle: mahalle,
-      wkt: wkt
+      wkt: transformedGeometry.toString()
     };
 
     $.ajax({
@@ -128,6 +127,7 @@ function addInteractions() {
 
 
 closer.onclick = function () {
+  source.clear()
   hiddenDiv.style.display = 'none';
   closer.blur();
   return false;
