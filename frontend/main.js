@@ -42,7 +42,20 @@ const overlay = new Overlay({
     },
   },
 });
-
+$.ajax({
+  url: 'https://localhost:7269/api/parsel/getall',
+  type: 'GET',
+  dataType: 'json',
+  success: function (response) {
+    for (var i = 0; i < response.length; i++) {
+      tabloyaVeriEkle(response[i]);
+    }
+    console.log(response);
+  },
+  error: function (xhr, status, error) {
+    console.error(error);
+  }
+});
 
 const key = 'JVrrevZtydJvT8n7GeKr';
 const attributions =
@@ -75,6 +88,23 @@ map.addInteraction(modify);
 
 let draw, snap; // global so we can remove them later
 const typeSelect = document.getElementById('type');
+
+function tabloyaVeriEkle(veri) {
+  var tableBody = $('#tableBody');
+  var row = $('<tr>');
+
+  row.html(`
+      <td>${veri.sehir}</td>
+      <td>${veri.ilce}</td>
+      <td>${veri.mahalle}</td>
+      <td>
+        <button class="edit-button">Düzenle</button>
+        <button class="delete-button">Sil</button>
+      </td>
+    `);
+
+  tableBody.append(row);
+}
 
 var lastDraw;
 function addInteractions() {
@@ -109,6 +139,7 @@ function addInteractions() {
       data: JSON.stringify(data),
       contentType: 'application/json',
       success: function (response) {
+
         console.log('Sunucudan gelen cevap:', response);
       },
       error: function (error) {
@@ -116,6 +147,21 @@ function addInteractions() {
       }
     });
     hiddenDiv.style.display = 'none';
+
+    $.ajax({
+      url: 'https://localhost:7269/api/parsel/getall',
+      type: 'GET',
+      dataType: 'json',
+      success: function (response) {
+        for (var i = 0; i < response.length; i++) {
+          tabloyaVeriEkle(response[i]);
+        }
+        console.log(response);
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+      }
+    });
   });
 
   map.addInteraction(draw);
