@@ -18,7 +18,7 @@ const saveParcel = document.getElementsByClassName('bottomButton');
 const editDiv = document.getElementById('Editdiv');
 const raster = new TileLayer({ source: new OSM(), });
 const format = new WKT();
-var source = new VectorSource()
+const source = new VectorSource()
 const vector = new VectorLayer({
   source: source,
   style: {
@@ -74,12 +74,12 @@ function fetchData(url, successCallback, errorCallback) {
     error: errorCallback,
   });
 }
+
 function getAllParsels() {
   fetchData(getAllUrl,
     function (response) {
       $('#tableBody').empty();
       source.refresh()
-      console.log(response)
       for (var i = 0; i < response.length; i++) {
         if (response[i].wkt != null) {
           var parsel = format.readFeature(response[i].wkt, {
@@ -96,12 +96,14 @@ function getAllParsels() {
     }
   );
 }
+
 function getParselById(parselId, successCallback, errorCallback) {
   fetchData(getByIdUrl + parselId,
     successCallback,
     errorCallback
   );
 }
+
 function tabloyaVeriEkle(data) {
   var tableBody = $('#tableBody');
   var row = $('<tr>');
@@ -122,7 +124,8 @@ function tabloyaVeriEkle(data) {
 
   tableBody.append(row);
 }
-function makeFieldsEmpty() {
+
+function ClearFields() {
   $("#placeholder1 textarea").val("");
   $("#placeholder2 textarea").val("");
   $("#placeholder3 textarea").val("");
@@ -131,6 +134,11 @@ function makeFieldsEmpty() {
   $("#placeholder6 textarea").val("");
 }
 
+function fillFields(sehir, ilce, mahalle) {
+  $("#placeholder4 textarea").val(`${sehir}`);
+  $("#placeholder5 textarea").val(`${ilce}`);
+  $("#placeholder6 textarea").val(`${mahalle}`);
+}
 
 let draw, snap, selectedParselId, selectedParselWkt;
 var lastDraw;
@@ -149,9 +157,13 @@ function addInteractions() {
     var wkt = format.writeGeometry(event.feature.getGeometry());
     //var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
   });
-
+  let sehir, ilce, mahalle;
   $(document).on('click', '.edit-button', function () {
     selectedParselId = parseInt($(this).closest('tr').find('td:eq(0)').text());
+    sehir = $(this).closest('tr').find('td:eq(1)').text();
+    ilce = $(this).closest('tr').find('td:eq(2)').text();
+    mahalle = $(this).closest('tr').find('td:eq(3)').text();
+    fillFields(sehir, ilce, mahalle);
     editDiv.style.display = "block";
   });
 
@@ -177,7 +189,6 @@ function addInteractions() {
         data: JSON.stringify(data),
         contentType: 'application/json',
         success: function (response) {
-          console.log('Sunucudan gelen cevap:', response);
           resolve(response);
         },
         error: function (error) {
@@ -191,7 +202,7 @@ function addInteractions() {
       (res) => { }
     );
     hiddenDiv.style.display = 'none';
-    makeFieldsEmpty()
+    ClearFields()
   });
 
   map.addInteraction(draw);
@@ -202,16 +213,19 @@ let feature, editParsel;
 $(document).on('click', '.wktEdit-button', function () {
   $('.confirm-button, .cancel-button').hide();
   var row = $(this).closest('tr');
-  row.find('.confirm-button, .cancel-button').show();
+  row.find('.cancel-button').show();
   selectedParselId = parseInt($(this).closest('tr').find('td:eq(0)').text());
   var dataEdit;
+  source.clear();
   getParselById(selectedParselId,
     function (parselData) {
       editParsel = format.readFeature(parselData.wkt, {
         dataProjection: 'EPSG:3857',
         featureProjection: 'EPSG:3857',
       })
+      source.addFeature(editParsel);
       modify.on('modifyend', function (e) {
+        row.find('.confirm-button').show();
         feature = e.features.getArray()[0];
         selectedParselWkt = feature;
         dataEdit = {
@@ -243,7 +257,6 @@ $(document).on('click', '.wktEdit-button', function () {
         contentType: 'application/json',
         success: function (response) {
           source.refresh()
-          console.log('Sunucudan gelen cevap:', response);
           resolve(response);
         },
         error: function (error) {
@@ -297,12 +310,10 @@ $(document).on('click', '.bottomButton2', function () {
       contentType: 'application/json',
       success: function (response) {
         source.refresh()
-        console.log('Sunucudan gelen cevap:', response);
         resolve(response);
       },
       error: function (error) {
         reject(error)
-        console.log(data)
         console.error('Hata oluştu:', error);
       }
     });
@@ -313,7 +324,7 @@ $(document).on('click', '.bottomButton2', function () {
 
     });
   editDiv.style.display = 'none';
-  makeFieldsEmpty()
+  ClearFields()
 });
 
 $(document).on('click', '.delete-button', function () {
@@ -330,12 +341,10 @@ $(document).on('click', '.delete-button', function () {
       data: JSON.stringify(data),
       contentType: 'application/json',
       success: function (response) {
-        console.log('Silme işlemi başarılı:', response);
         resolve(response);
       },
       error: function (error) {
         reject(error)
-        console.log(data)
         console.error('Hata oluştu:', error);
       }
     });
