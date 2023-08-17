@@ -258,6 +258,7 @@ $(document).on('click', '.wktEdit-button', function () {
     source.refresh();
     map.removeInteraction(modify);
     map.addInteraction(draw);
+    map.addInteraction(snap);
 
 
     let pro = new Promise((resolve, reject) => {
