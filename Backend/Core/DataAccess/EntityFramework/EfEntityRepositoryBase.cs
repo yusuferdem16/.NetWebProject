@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 namespace Core.DataAccess.EntityFramework
 {
     public class EfEntityRepositoryBase<TEntity, TContext> : IEntityRepository<TEntity>
-        where TEntity : class, IEntity, new()
-        where TContext : DbContext, new()
+    where TEntity : class, IEntity, new()
+    where TContext : DbContext, new()
     {
         public void Add(TEntity entity)
         {
@@ -40,16 +40,17 @@ namespace Core.DataAccess.EntityFramework
                 return context.Set<TEntity>().SingleOrDefault(filter);
             }
         }
+
         public IList<TEntity> GetList(Expression<Func<TEntity, bool>> filter = null)
         {
             using (var context = new TContext())
             {
                 return filter == null
-                ? context.Set<TEntity>().ToList()
-                : context.Set<TEntity>().Where(filter).ToList();
-            
+                    ? context.Set<TEntity>().ToList()
+                    : context.Set<TEntity>().Where(filter).ToList();
             }
         }
+
         public void Update(TEntity entity)
         {
             using (var context = new TContext())

@@ -46,6 +46,87 @@
       color: #333;
     }
 
+    .hidden-div .bottomButton {
+      position: absolute;
+      bottom: 20px;
+      left: 30px;
+      right: 20px;
+      padding: 10px;
+      margin: 10px 2px;
+      /* Added margin-top */
+      background-color: #040b03;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .hidden-div .bottomButton:hover {
+      background-color: #0b9906;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-div {
+      display: none;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #d1d1d1;
+      width: 90%;
+      height: 50%;
+      max-width: 1000px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+    }
+
+    .edit-div #closeEditDiv {
+      position: absolute;
+      height: 40px;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #666;
+    }
+
+    .edit-div h3 {
+      margin: 0 0 15px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .edit-div .bottomButton2 {
+      position: absolute;
+      bottom: 20px;
+      left: 30px;
+      right: 20px;
+      padding: 10px;
+      margin: 10px 2px;
+      /* Added margin-top */
+      background-color: #040b03;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .edit-div .bottomButton2:hover {
+      background-color: #0b9906;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
     .placeholder {
       margin: 10px;
       background-color: #ffffff;
@@ -73,29 +154,6 @@
       margin-top: 15px;
       font-size: 16px;
       color: #555;
-    }
-
-    .hidden-div .bottomButton {
-      position: absolute;
-      bottom: 20px;
-      left: 30px;
-      right: 20px;
-      padding: 10px;
-      margin: 10px 2px;
-      /* Added margin-top */
-      background-color: #040b03;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-    }
-
-    .hidden-div .bottomButton:hover {
-      background-color: #0b9906;
-      transform: translateY(-2px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     label {
@@ -153,6 +211,7 @@
 </head>
 
 <body>
+
   <div id="map" class="map"></div>
   <div id="hiddenDiv" class="hidden-div">
     <button id="closeHiddenDiv">X</button>
@@ -168,6 +227,22 @@
     </div>
     <button class="bottomButton">Parsel Kaydet</button> <!-- Styling applied to this button -->
   </div>
+
+  <div id="Editdiv" class="edit-div">
+    <button id="closeEditDiv">X</button>
+
+    <div class="placeholder" id="placeholder4">
+      <textarea placeholder="Şehir"></textarea>
+    </div>
+    <div class="placeholder" id="placeholder5">
+      <textarea placeholder="İlçe"></textarea>
+    </div>
+    <div class="placeholder" id="placeholder6">
+      <textarea placeholder="Mahalle"></textarea>
+    </div>
+    <button class="bottomButton2" data-parselid="${data.parselId}">Değişiklileri Kaydet</button>
+  </div>
+
   <form>
     <label for="type">Geometry type:</label>
     <select id="type">
@@ -179,6 +254,7 @@
   <table>
     <thead>
       <tr>
+        <th>ParselID</th>
         <th>Şehir</th>
         <th>İlçe</th>
         <th>Mahalle</th>
@@ -186,7 +262,6 @@
       </tr>
     </thead>
     <tbody id="tableBody">
-      <!-- Verileri burada dinamik olarak ekleyeceksiniz -->
     </tbody>
   </table>
   <script src="https://cdn.jsdelivr.net/npm/elm-pep@1.0.6/dist/elm-pep.js"></script>

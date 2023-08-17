@@ -48,20 +48,20 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPost("update")]
+        [HttpPut("{id:int}/update")]
         public IActionResult Update(Parsel parsel)
         {
-            var result = _parselService.Add(parsel);
+            var result = _parselService.Update(parsel);
 
             if (result.Success) { return Ok(result.Message); }
 
             return BadRequest(result.Message);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         public IActionResult Delete(Parsel parsel)
         {
-            var result = _parselService.Add(parsel);
+            var result = _parselService.Delete(parsel);
 
             if (result.Success) { return Ok(result.Message); }
 

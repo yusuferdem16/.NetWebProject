@@ -6,22 +6,18 @@ import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer.js';
 import { get } from 'ol/proj.js';
 import Overlay from 'ol/Overlay.js';
 import XYZ from 'ol/source/XYZ.js';
-import { toLonLat } from 'ol/proj.js';
-import { toStringHDMS } from 'ol/coordinate.js';
 import WKT from 'ol/format/WKT.js';
 import $ from "jquery";
+
 
 const container = document.getElementById('popup');
 const content = document.getElementById('hiddenDiv');
 const closer = document.getElementById('closeHiddenDiv');
+const closer2 = document.getElementById('closeEditDiv');
 const saveParcel = document.getElementsByClassName('bottomButton');
-
-const raster = new TileLayer({
-  source: new OSM(),
-});
-
+const editDiv = document.getElementById('Editdiv');
+const raster = new TileLayer({ source: new OSM(), });
 const format = new WKT();
-
 const source = new VectorSource()
 const vector = new VectorLayer({
   source: source,
@@ -33,7 +29,6 @@ const vector = new VectorLayer({
     'circle-fill-color': '#ffcc33',
   },
 });
-
 const overlay = new Overlay({
   element: container,
   autoPan: {
@@ -42,28 +37,10 @@ const overlay = new Overlay({
     },
   },
 });
-$.ajax({
-  url: 'https://localhost:7269/api/parsel/getall',
-  type: 'GET',
-  dataType: 'json',
-  success: function (response) {
-    for (var i = 0; i < response.length; i++) {
-      tabloyaVeriEkle(response[i]);
-    }
-    console.log(response);
-  },
-  error: function (xhr, status, error) {
-    console.error(error);
-  }
-});
-
 const key = 'JVrrevZtydJvT8n7GeKr';
 const attributions =
   '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
-
-// Limit multi-world panning to one world east and west of the real world.
-// Geometry coordinates have to be within that range.
 const extent = get('EPSG:3857').getExtent().slice();
 extent[0] += extent[0];
 extent[2] += extent[2];
@@ -82,18 +59,44 @@ const map = new Map({
     zoom: 4,
   }),
 });
-
 const modify = new Modify({ source: source });
-map.addInteraction(modify);
-
-let draw, snap; // global so we can remove them later
 const typeSelect = document.getElementById('type');
+const getAllUrl = 'https://localhost:7269/api/parsel/getall';
 
+function fetchData(url, successCallback, errorCallback) {
+  $.ajax({
+    url: url,
+    type: 'GET',
+    dataType: 'json',
+    success: successCallback,
+    error: errorCallback,
+  });
+}
+function getAllParsels() {
+  fetchData(getAllUrl,
+    function (response) {
+      $('#tableBody').empty();
+      source.refresh()
+      for (var i = 0; i < response.length; i++) {
+        // const parsel = format.readFeature(response[i].wkt, {
+        //   dataProjection: 'EPSG:3857',
+        //   featureProjection: 'EPSG:3857',
+        // });
+        // source.addFeature(parsel)
+        tabloyaVeriEkle(response[i]);
+      }
+    },
+    function (xhr, status, error) {
+      console.error(error);
+    }
+  );
+}
 function tabloyaVeriEkle(veri) {
   var tableBody = $('#tableBody');
   var row = $('<tr>');
 
   row.html(`
+      <td>${veri.parselId}</td>
       <td>${veri.sehir}</td>
       <td>${veri.ilce}</td>
       <td>${veri.mahalle}</td>
@@ -106,7 +109,13 @@ function tabloyaVeriEkle(veri) {
   tableBody.append(row);
 }
 
+map.addInteraction(modify);
+
+let draw, snap, selectedParselId;
 var lastDraw;
+
+getAllParsels()
+
 function addInteractions() {
   draw = new Draw({
     source: source,
@@ -117,8 +126,14 @@ function addInteractions() {
     hiddenDiv.style.display = 'block';
     lastDraw = event.feature;
     var wkt = format.writeGeometry(event.feature.getGeometry());
-    var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
+    //var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
   });
+
+  $(document).on('click', '.edit-button', function () {
+    selectedParselId = parseInt($(this).closest('tr').find('td:eq(0)').text());
+    editDiv.style.display = "block";
+  });
+
 
   $(document).on('click', '.bottomButton', function () {
     var sehir = $("#placeholder1 textarea").val();
@@ -133,35 +148,28 @@ function addInteractions() {
       wkt: wkt
     };
 
-    $.ajax({
-      url: 'https://localhost:7269/api/parsel/add', // Post edilecek URL'yi buraya ekleyin
-      method: 'POST',
-      data: JSON.stringify(data),
-      contentType: 'application/json',
-      success: function (response) {
 
-        console.log('Sunucudan gelen cevap:', response);
-      },
-      error: function (error) {
-        console.error('Hata oluştu:', error);
-      }
-    });
-    hiddenDiv.style.display = 'none';
-
-    $.ajax({
-      url: 'https://localhost:7269/api/parsel/getall',
-      type: 'GET',
-      dataType: 'json',
-      success: function (response) {
-        for (var i = 0; i < response.length; i++) {
-          tabloyaVeriEkle(response[i]);
+    let pro = new Promise((resolve, reject) => {
+      $.ajax({
+        url: 'https://localhost:7269/api/parsel/add',
+        method: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function (response) {
+          console.log('Sunucudan gelen cevap:', response);
+          resolve(response);
+        },
+        error: function (error) {
+          console.error('Hata oluştu:', error);
+          reject(error);
         }
-        console.log(response);
-      },
-      error: function (xhr, status, error) {
-        console.error(error);
-      }
-    });
+      });
+    }).then((res) => {
+      getAllParsels()
+    },
+      (res) => { }
+    );
+    hiddenDiv.style.display = 'none';
   });
 
   map.addInteraction(draw);
@@ -169,10 +177,86 @@ function addInteractions() {
   map.addInteraction(snap);
 }
 
+$(document).on('click', '.bottomButton2', function () {
+  console.log(selectedParselId)
+
+  var sehir = $("#placeholder4 textarea").val();
+  var ilce = $("#placeholder5 textarea").val();
+  var mahalle = $("#placeholder6 textarea").val();
+
+  var data = {
+    parselId: selectedParselId,
+    sehir: sehir,
+    ilce: ilce,
+    mahalle: mahalle,
+  };
+
+  let pro = new Promise((resolve, reject) => {
+    $.ajax({
+      url: `https://localhost:7269/api/parsel/${selectedParselId}/update`,
+      method: 'PUT',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      success: function (response) {
+
+        console.log('Sunucudan gelen cevap:', response);
+        resolve(response);
+      },
+      error: function (error) {
+        reject(error)
+        console.log(data)
+        console.error('Hata oluştu:', error);
+      }
+    });
+  }).then((res) => {
+    getAllParsels()
+  },
+    (res) => {
+
+    });
+  editDiv.style.display = 'none';
+});
+
+$(document).on('click', '.delete-button', function () {
+
+  var row = $(this).closest('tr');
+  var data = {
+    parselId: parseInt(row.find('td:eq(0)').text()),
+  };
+
+  let pro = new Promise((resolve, reject) => {
+    $.ajax({
+      url: 'https://localhost:7269/api/parsel/delete',
+      method: 'DELETE',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      success: function (response) {
+        console.log('Silme işlemi başarılı:', response);
+        resolve(response);
+      },
+      error: function (error) {
+        reject(error)
+        console.log(data)
+        console.error('Hata oluştu:', error);
+      }
+    });
+  }).then((res) => {
+    getAllParsels()
+  },
+    (res) => {
+
+    });
+});
 
 closer.onclick = function () {
   source.removeFeature(lastDraw)
   hiddenDiv.style.display = 'none';
+  closer.blur();
+  return false;
+};
+
+closer2.onclick = function () {
+  editDiv.style.display = 'none';
   closer.blur();
   return false;
 };
