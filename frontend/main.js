@@ -221,6 +221,7 @@ $(document).on('click', '.bottomButton', function () {
 let feature, editParsel;
 $(document).on('click', '.wktEdit-button', function () {
   $('.confirm-button, .cancel-button').hide();
+  map.removeInteraction(draw);
   var row = $(this).closest('tr');
   row.find('.cancel-button').show();
   selectedParselId = parseInt($(this).closest('tr').find('td:eq(0)').text());
@@ -256,6 +257,7 @@ $(document).on('click', '.wktEdit-button', function () {
   $('.confirm-button').on('click', function () {
     source.refresh();
     map.removeInteraction(modify);
+    map.addInteraction(draw);
 
 
     let pro = new Promise((resolve, reject) => {
@@ -283,6 +285,7 @@ $(document).on('click', '.wktEdit-button', function () {
   });
   $('.cancel-button').on('click', function () {
     map.removeInteraction(modify);
+    map.addInteraction(draw);
     var row = $(this).closest('tr');
     row.find('.confirm-button, .cancel-button').hide();
     getAllParsels();
