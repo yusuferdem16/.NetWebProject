@@ -139,7 +139,11 @@ function fillFields(sehir, ilce, mahalle) {
   $("#placeholder5 textarea").val(`${ilce}`);
   $("#placeholder6 textarea").val(`${mahalle}`);
 }
-
+function disableInteractions() {
+  map.removeInteraction(draw);
+  map.removeInteraction(snap);
+  map.removeInteraction(modify);
+}
 let draw, snap, selectedParselId, selectedParselWkt;
 var lastDraw;
 
@@ -167,48 +171,49 @@ function addInteractions() {
     editDiv.style.display = "block";
   });
 
-
-  $(document).on('click', '.bottomButton', function () {
-    var sehir = $("#placeholder1 textarea").val();
-    var ilce = $("#placeholder2 textarea").val();
-    var mahalle = $("#placeholder3 textarea").val();
-    var wkt = format.writeGeometry(lastDraw.getGeometry());
-
-    var data = {
-      sehir: sehir,
-      ilce: ilce,
-      mahalle: mahalle,
-      wkt: wkt
-    };
-
-
-    let pro = new Promise((resolve, reject) => {
-      $.ajax({
-        url: 'https://localhost:7269/api/parsel/add',
-        method: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (error) {
-          console.error('Hata oluştu:', error);
-          reject(error);
-        }
-      });
-    }).then((res) => {
-      getAllParsels()
-    },
-      (res) => { }
-    );
-    hiddenDiv.style.display = 'none';
-    ClearFields()
-  });
-
   map.addInteraction(draw);
   snap = new Snap({ source: source });
   map.addInteraction(snap);
 }
+$(document).on('click', '.bottomButton', function () {
+  var sehir = $("#placeholder1 textarea").val();
+  var ilce = $("#placeholder2 textarea").val();
+  var mahalle = $("#placeholder3 textarea").val();
+  var wkt = format.writeGeometry(lastDraw.getGeometry());
+
+  var data = {
+    sehir: sehir,
+    ilce: ilce,
+    mahalle: mahalle,
+    wkt: wkt
+  };
+
+
+  let pro = new Promise((resolve, reject) => {
+    $.ajax({
+      url: 'https://localhost:7269/api/parsel/add',
+      method: 'POST',
+      data: JSON.stringify(data),
+      contentType: 'application/json',
+      success: function (response) {
+        console.log(data);
+        debugger
+        resolve(response);
+
+      },
+      error: function (error) {
+        console.error('Hata oluştu:', error);
+        reject(error);
+      }
+    });
+  }).then((res) => {
+    getAllParsels()
+  },
+    (res) => { }
+  );
+  hiddenDiv.style.display = 'none';
+  ClearFields()
+});
 let feature, editParsel;
 $(document).on('click', '.wktEdit-button', function () {
   $('.confirm-button, .cancel-button').hide();

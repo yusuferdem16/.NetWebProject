@@ -6,69 +6,22 @@
   <title>Draw and Modify Features</title>
   <link rel="stylesheet" href="node_modules/ol/ol.css">
   <style>
+    /* Global Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    /* Map */
     .map {
       width: 100%;
       height: 400px;
     }
 
-    .hidden-div {
-      display: none;
-      background-color: #fff;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      border-radius: 10px;
-      border: 1px solid #d1d1d1;
-      width: 90%;
-      height: 50%;
-      max-width: 1000px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
-    }
-
-    .hidden-div #closeHiddenDiv {
-      position: absolute;
-      height: 40px;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 20px;
-      color: #666;
-    }
-
-    .hidden-div h3 {
-      margin: 0 0 15px;
-      font-size: 24px;
-      color: #333;
-    }
-
-    .hidden-div .bottomButton {
-      position: absolute;
-      bottom: 20px;
-      left: 30px;
-      right: 20px;
-      padding: 10px;
-      margin: 10px 2px;
-      /* Added margin-top */
-      background-color: #040b03;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-    }
-
-    .hidden-div .bottomButton:hover {
-      background-color: #0b9906;
-      transform: translateY(-2px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
+    /* Hidden Div */
+    .hidden-div,
     .edit-div {
       display: none;
       background-color: #fff;
@@ -86,6 +39,7 @@
       z-index: 1000;
     }
 
+    .hidden-div #closeHiddenDiv,
     .edit-div #closeEditDiv {
       position: absolute;
       height: 40px;
@@ -98,20 +52,21 @@
       color: #666;
     }
 
+    .hidden-div h3,
     .edit-div h3 {
       margin: 0 0 15px;
       font-size: 24px;
       color: #333;
     }
 
-    .edit-div .bottomButton2 {
+    .bottomButton,
+    .bottomButton2 {
       position: absolute;
       bottom: 20px;
       left: 30px;
       right: 20px;
       padding: 10px;
       margin: 10px 2px;
-      /* Added margin-top */
       background-color: #040b03;
       color: #fff;
       border: none;
@@ -121,18 +76,20 @@
       transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
     }
 
-    .edit-div .bottomButton2:hover {
+    .bottomButton:hover,
+    .bottomButton2:hover {
       background-color: #0b9906;
       transform: translateY(-2px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    /* Placeholder */
     .placeholder {
       margin: 10px;
+      padding: 15px;
       background-color: #ffffff;
       border-radius: 8px;
       transition: background-color 0.3s, border-color 0.3s;
-      padding: 15px;
     }
 
     .placeholder:hover {
@@ -150,6 +107,7 @@
       resize: none;
     }
 
+    /* Form Styling */
     form {
       margin-top: 15px;
       font-size: 16px;
@@ -168,11 +126,19 @@
       background-color: #fff;
     }
 
+    /* Table Styling */
     table {
       border-collapse: collapse;
       width: 100%;
       border: 1px solid #ccc;
       margin-top: 20px;
+    }
+
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
     }
 
     th,
@@ -181,74 +147,52 @@
       padding: 10px;
       text-align: left;
       max-height: 100px;
-      /* Adjust the maximum height as needed */
       overflow: hidden;
       white-space: nowrap;
-      /* Prevent line breaks within cells */
       text-overflow: ellipsis;
-      /* Show ellipsis (...) for overflowed content */
     }
 
-    /* Düzenle ve Sil butonları için stil */
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    /* Button Styling */
     .edit-button,
-    .delete-button {
+    .delete-button,
+    .wktEdit-button,
+    .confirm-button,
+    .cancel-button {
       padding: 6px 10px;
       cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
       border: none;
       border-radius: 4px;
+      margin-left: 5px;
+      color: white;
+    }
+
+    .edit-button {
+      background-color: #4CAF50;
     }
 
     .delete-button {
       background-color: #f44336;
-      margin-left: 5px;
     }
 
-    /* Butonlara hover stil eklemek */
     .edit-button:hover,
     .delete-button:hover {
       background-color: #45a049;
     }
 
-    #tableBody tr td:nth-child(5) {
-      height: 50px;
-      /* Adjust the height to your preference */
-      overflow: hidden;
-    }
-
-    .wktEdit-button {
-      padding: 6px 10px;
-      cursor: pointer;
-      background-color: #007bff;
-      /* Adjust the color as needed */
-      color: white;
-      border: none;
-      border-radius: 4px;
-      margin-left: 5px;
-    }
-
-    .wktEdit-button:hover {
-      background-color: #0056b3;
-      /* Adjust the color as needed */
-    }
-
+    .wktEdit-button,
     .confirm-button,
     .cancel-button {
-      padding: 6px 10px;
-      cursor: pointer;
-      background-color: #28a745;
-      /* Adjust the color as needed */
-      color: white;
-      border: none;
-      border-radius: 4px;
-      margin-left: 5px;
+      background-color: #007bff;
     }
 
+    .wktEdit-button:hover,
     .confirm-button:hover,
     .cancel-button:hover {
-      background-color: #218838;
-      /* Adjust the color as needed */
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -282,9 +226,6 @@
     </div>
     <div class="placeholder" id="placeholder6">
       <textarea placeholder="Mahalle"></textarea>
-    </div>
-    <div class="placeholder" id="placeholder7">
-      <textarea placeholder="Wkt"></textarea>
     </div>
     <button class="bottomButton2">Değişiklileri Kaydet</button>
   </div>
