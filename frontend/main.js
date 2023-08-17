@@ -18,7 +18,7 @@ const saveParcel = document.getElementsByClassName('bottomButton');
 const editDiv = document.getElementById('Editdiv');
 const raster = new TileLayer({ source: new OSM(), });
 const format = new WKT();
-const source = new VectorSource()
+var source = new VectorSource()
 const vector = new VectorLayer({
   source: source,
   style: {
@@ -114,13 +114,23 @@ function tabloyaVeriEkle(data) {
     <td>
       <button class="edit-button">Düzenle</button>
       <button class="delete-button">Sil</button>
+      <button class="wktEdit-button">Edit</button>
+      <button class="confirm-button" style="display: none;">Confirm</button>
+      <button class="cancel-button" style="display: none;">Cancel</button>
     </td>
   `);
 
   tableBody.append(row);
 }
+function makeFieldsEmpty() {
+  $("#placeholder1 textarea").val("");
+  $("#placeholder2 textarea").val("");
+  $("#placeholder3 textarea").val("");
+  $("#placeholder4 textarea").val("");
+  $("#placeholder5 textarea").val("");
+  $("#placeholder6 textarea").val("");
+}
 
-map.addInteraction(modify);
 
 let draw, snap, selectedParselId, selectedParselWkt;
 var lastDraw;
@@ -181,20 +191,87 @@ function addInteractions() {
       (res) => { }
     );
     hiddenDiv.style.display = 'none';
+    makeFieldsEmpty()
   });
 
   map.addInteraction(draw);
   snap = new Snap({ source: source });
   map.addInteraction(snap);
 }
+let feature, editParsel;
+$(document).on('click', '.wktEdit-button', function () {
+  $('.confirm-button, .cancel-button').hide();
+  var row = $(this).closest('tr');
+  row.find('.confirm-button, .cancel-button').show();
+  selectedParselId = parseInt($(this).closest('tr').find('td:eq(0)').text());
+  var dataEdit;
+  getParselById(selectedParselId,
+    function (parselData) {
+      editParsel = format.readFeature(parselData.wkt, {
+        dataProjection: 'EPSG:3857',
+        featureProjection: 'EPSG:3857',
+      })
+      modify.on('modifyend', function (e) {
+        feature = e.features.getArray()[0];
+        selectedParselWkt = feature;
+        dataEdit = {
+          parselId: selectedParselId,
+          sehir: parselData.sehir,
+          ilce: parselData.ilce,
+          mahalle: parselData.mahalle,
+          wkt: new WKT().writeFeature(selectedParselWkt)
+        }
+      });
+      map.addInteraction(modify);
 
+    },
+    function (xhr, status, error) {
+      console.error(error);
+    }
+  );
+
+  $('.confirm-button').on('click', function () {
+    source.refresh();
+    map.removeInteraction(modify);
+
+
+    let pro = new Promise((resolve, reject) => {
+      $.ajax({
+        url: `https://localhost:7269/api/parsel/${selectedParselId}/update`,
+        method: 'PUT',
+        data: JSON.stringify(dataEdit),
+        contentType: 'application/json',
+        success: function (response) {
+          source.refresh()
+          console.log('Sunucudan gelen cevap:', response);
+          resolve(response);
+        },
+        error: function (error) {
+          reject(error)
+          console.error('Hata oluştu:', error);
+        }
+      });
+    }).then((res) => {
+      getAllParsels()
+    },
+      (res) => {
+
+      });
+
+  });
+  $('.cancel-button').on('click', function () {
+    map.removeInteraction(modify);
+    var row = $(this).closest('tr');
+    row.find('.confirm-button, .cancel-button').hide();
+    getAllParsels();
+  });
+
+});
 $(document).on('click', '.bottomButton2', function () {
 
   getParselById(selectedParselId,
     function (parselData) {
-      console.log(parselData, "qwedqweqweqweq")
       selectedParselWkt = parselData.wkt;
-
     },
     function (xhr, status, error) {
       console.error(error);
@@ -236,6 +313,7 @@ $(document).on('click', '.bottomButton2', function () {
 
     });
   editDiv.style.display = 'none';
+  makeFieldsEmpty()
 });
 
 $(document).on('click', '.delete-button', function () {
