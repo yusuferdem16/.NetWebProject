@@ -140,11 +140,13 @@ function fillFields(sehir, ilce, mahalle) {
   $("#placeholder5 textarea").val(`${ilce}`);
   $("#placeholder6 textarea").val(`${mahalle}`);
 }
+
 function disableInteractions() {
   map.removeInteraction(draw);
   map.removeInteraction(snap);
   map.removeInteraction(modify);
 }
+
 let draw, snap, selectedParselId, selectedParselWkt;
 var lastDraw;
 
@@ -163,7 +165,9 @@ function addInteractions() {
     var wkt = format.writeGeometry(event.feature.getGeometry());
     //var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
   });
+
   let sehir, ilce, mahalle;
+
   $(document).on('click', '.edit-button', function () {
     selectedParselId = parseInt($(this).closest('tr').find('td:eq(0)').text());
     sehir = $(this).closest('tr').find('td:eq(1)').text();
@@ -177,7 +181,9 @@ function addInteractions() {
   map.addInteraction(draw);
   snap = new Snap({ source: source });
   map.addInteraction(snap);
+
 }
+
 $(document).on('click', '.bottomButton', function () {
   modalOverlay.style.display = 'none';
   var sehir = $("#placeholder1 textarea").val();
@@ -217,8 +223,11 @@ $(document).on('click', '.bottomButton', function () {
   );
   hiddenDiv.style.display = 'none';
   ClearFields()
+
 });
+
 let feature, editParsel;
+
 $(document).on('click', '.wktEdit-button', function () {
   $('.confirm-button, .cancel-button').hide();
   map.removeInteraction(draw);
@@ -284,6 +293,7 @@ $(document).on('click', '.wktEdit-button', function () {
       });
 
   });
+
   $('.cancel-button').on('click', function () {
     map.removeInteraction(modify);
     map.addInteraction(draw);
@@ -293,6 +303,7 @@ $(document).on('click', '.wktEdit-button', function () {
   });
 
 });
+
 $(document).on('click', '.bottomButton2', function () {
   modalOverlay.style.display = 'none';
 
@@ -304,6 +315,7 @@ $(document).on('click', '.bottomButton2', function () {
       console.error(error);
     }
   );
+
   var sehir = $("#placeholder4 textarea").val();
   var ilce = $("#placeholder5 textarea").val();
   var mahalle = $("#placeholder6 textarea").val();
