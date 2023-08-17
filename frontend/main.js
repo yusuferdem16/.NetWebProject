@@ -19,7 +19,7 @@ const modalOverlay = document.getElementById('modalOverlay');
 const editDiv = document.getElementById('Editdiv');
 const raster = new TileLayer({ source: new OSM(), });
 const format = new WKT();
-const source = new VectorSource()
+const source = new VectorSource();
 const vector = new VectorLayer({
   source: source,
   style: {
@@ -80,7 +80,7 @@ function getAllParsels() {
   fetchData(getAllUrl,
     function (response) {
       $('#tableBody').empty();
-      source.refresh()
+      source.refresh();
       for (var i = 0; i < response.length; i++) {
         if (response[i].wkt != null) {
           var parsel = format.readFeature(response[i].wkt, {
@@ -207,7 +207,6 @@ $(document).on('click', '.bottomButton', function () {
       contentType: 'application/json',
       success: function (response) {
         console.log(data);
-        debugger
         resolve(response);
 
       },
@@ -306,7 +305,6 @@ $(document).on('click', '.wktEdit-button', function () {
 
 $(document).on('click', '.bottomButton2', function () {
   modalOverlay.style.display = 'none';
-
   getParselById(selectedParselId,
     function (parselData) {
       selectedParselWkt = parselData.wkt;
@@ -320,7 +318,7 @@ $(document).on('click', '.bottomButton2', function () {
   var ilce = $("#placeholder5 textarea").val();
   var mahalle = $("#placeholder6 textarea").val();
 
-  var data = {
+  var dataEdit = {
     parselId: selectedParselId,
     sehir: sehir,
     ilce: ilce,
@@ -332,7 +330,7 @@ $(document).on('click', '.bottomButton2', function () {
     $.ajax({
       url: `https://localhost:7269/api/parsel/${selectedParselId}/update`,
       method: 'PUT',
-      data: JSON.stringify(data),
+      data: JSON.stringify(dataEdit),
       contentType: 'application/json',
       success: function (response) {
         source.refresh()
@@ -344,13 +342,13 @@ $(document).on('click', '.bottomButton2', function () {
       }
     });
   }).then((res) => {
-    getAllParsels()
+    getAllParsels();
   },
     (res) => {
 
     });
   editDiv.style.display = 'none';
-  ClearFields()
+  ClearFields();
 });
 
 $(document).on('click', '.delete-button', function () {
