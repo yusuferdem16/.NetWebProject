@@ -15,6 +15,7 @@ const content = document.getElementById('hiddenDiv');
 const closer = document.getElementById('closeHiddenDiv');
 const closer2 = document.getElementById('closeEditDiv');
 const saveParcel = document.getElementsByClassName('bottomButton');
+const modalOverlay = document.getElementById('modalOverlay');
 const editDiv = document.getElementById('Editdiv');
 const raster = new TileLayer({ source: new OSM(), });
 const format = new WKT();
@@ -157,6 +158,7 @@ function addInteractions() {
 
   draw.addEventListener("drawend", function (event) {
     hiddenDiv.style.display = 'block';
+    modalOverlay.style.display = 'block';
     lastDraw = event.feature;
     var wkt = format.writeGeometry(event.feature.getGeometry());
     //var transformedGeometry = format.readGeometry(wkt).transform('EPSG:3857', 'EPSG:4326').flatCoordinates
@@ -169,6 +171,7 @@ function addInteractions() {
     mahalle = $(this).closest('tr').find('td:eq(3)').text();
     fillFields(sehir, ilce, mahalle);
     editDiv.style.display = "block";
+    modalOverlay.style.display = 'block';
   });
 
   map.addInteraction(draw);
@@ -176,6 +179,7 @@ function addInteractions() {
   map.addInteraction(snap);
 }
 $(document).on('click', '.bottomButton', function () {
+  modalOverlay.style.display = 'none';
   var sehir = $("#placeholder1 textarea").val();
   var ilce = $("#placeholder2 textarea").val();
   var mahalle = $("#placeholder3 textarea").val();
@@ -286,6 +290,7 @@ $(document).on('click', '.wktEdit-button', function () {
 
 });
 $(document).on('click', '.bottomButton2', function () {
+  modalOverlay.style.display = 'none';
 
   getParselById(selectedParselId,
     function (parselData) {
@@ -364,12 +369,14 @@ $(document).on('click', '.delete-button', function () {
 closer.onclick = function () {
   source.removeFeature(lastDraw)
   hiddenDiv.style.display = 'none';
+  modalOverlay.style.display = 'none';
   closer.blur();
   return false;
 };
 
 closer2.onclick = function () {
   editDiv.style.display = 'none';
+  modalOverlay.style.display = 'none';
   closer.blur();
   return false;
 };

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Draw and Modify Features</title>
+  <title>OpenLayers Web Project</title>
   <link rel="stylesheet" href="node_modules/ol/ol.css">
   <style>
     /* Global Styling */
@@ -18,6 +18,17 @@
     .map {
       width: 100%;
       height: 400px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.504);
+      z-index: 1000;
+      display: none;
     }
 
     /* Hidden Div */
@@ -200,6 +211,7 @@
 <body>
 
   <div id="map" class="map"></div>
+  <div class="modal-overlay" id="modalOverlay"></div>
   <div id="hiddenDiv" class="hidden-div">
     <button id="closeHiddenDiv">X</button>
 
