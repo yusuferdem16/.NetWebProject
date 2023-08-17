@@ -61,7 +61,9 @@ const map = new Map({
 });
 const modify = new Modify({ source: source });
 const typeSelect = document.getElementById('type');
+
 const getAllUrl = 'https://localhost:7269/api/parsel/getall';
+const getByIdUrl = `https://localhost:7269/api/Parsel/getbyid?parselId=`
 
 function fetchData(url, successCallback, errorCallback) {
   $.ajax({
@@ -77,12 +79,15 @@ function getAllParsels() {
     function (response) {
       $('#tableBody').empty();
       source.refresh()
+      console.log(response)
       for (var i = 0; i < response.length; i++) {
-        // const parsel = format.readFeature(response[i].wkt, {
-        //   dataProjection: 'EPSG:3857',
-        //   featureProjection: 'EPSG:3857',
-        // });
-        // source.addFeature(parsel)
+        if (response[i].wkt != null) {
+          var parsel = format.readFeature(response[i].wkt, {
+            dataProjection: 'EPSG:3857',
+            featureProjection: 'EPSG:3857',
+          });
+          source.addFeature(parsel)
+        }
         tabloyaVeriEkle(response[i]);
       }
     },
@@ -91,27 +96,33 @@ function getAllParsels() {
     }
   );
 }
-function tabloyaVeriEkle(veri) {
+function getParselById(parselId, successCallback, errorCallback) {
+  fetchData(getByIdUrl + parselId,
+    successCallback,
+    errorCallback
+  );
+}
+function tabloyaVeriEkle(data) {
   var tableBody = $('#tableBody');
   var row = $('<tr>');
 
   row.html(`
-      <td>${veri.parselId}</td>
-      <td>${veri.sehir}</td>
-      <td>${veri.ilce}</td>
-      <td>${veri.mahalle}</td>
-      <td>
-        <button class="edit-button">Düzenle</button>
-        <button class="delete-button">Sil</button>
-      </td>
-    `);
+    <td>${data.parselId}</td>
+    <td>${data.sehir}</td>
+    <td>${data.ilce}</td>
+    <td>${data.mahalle}</td>
+    <td>
+      <button class="edit-button">Düzenle</button>
+      <button class="delete-button">Sil</button>
+    </td>
+  `);
 
   tableBody.append(row);
 }
 
 map.addInteraction(modify);
 
-let draw, snap, selectedParselId;
+let draw, snap, selectedParselId, selectedParselWkt;
 var lastDraw;
 
 getAllParsels()
@@ -178,8 +189,17 @@ function addInteractions() {
 }
 
 $(document).on('click', '.bottomButton2', function () {
-  console.log(selectedParselId)
 
+  getParselById(selectedParselId,
+    function (parselData) {
+      console.log(parselData, "qwedqweqweqweq")
+      selectedParselWkt = parselData.wkt;
+
+    },
+    function (xhr, status, error) {
+      console.error(error);
+    }
+  );
   var sehir = $("#placeholder4 textarea").val();
   var ilce = $("#placeholder5 textarea").val();
   var mahalle = $("#placeholder6 textarea").val();
@@ -189,6 +209,7 @@ $(document).on('click', '.bottomButton2', function () {
     sehir: sehir,
     ilce: ilce,
     mahalle: mahalle,
+    wkt: selectedParselWkt
   };
 
   let pro = new Promise((resolve, reject) => {
@@ -198,7 +219,7 @@ $(document).on('click', '.bottomButton2', function () {
       data: JSON.stringify(data),
       contentType: 'application/json',
       success: function (response) {
-
+        source.refresh()
         console.log('Sunucudan gelen cevap:', response);
         resolve(response);
       },

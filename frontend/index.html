@@ -180,10 +180,13 @@
       border: 1px solid #ccc;
       padding: 10px;
       text-align: left;
-    }
-
-    th {
-      background-color: #f2f2f2;
+      max-height: 100px;
+      /* Adjust the maximum height as needed */
+      overflow: hidden;
+      white-space: nowrap;
+      /* Prevent line breaks within cells */
+      text-overflow: ellipsis;
+      /* Show ellipsis (...) for overflowed content */
     }
 
     /* Düzenle ve Sil butonları için stil */
@@ -206,6 +209,12 @@
     .edit-button:hover,
     .delete-button:hover {
       background-color: #45a049;
+    }
+
+    #tableBody tr td:nth-child(5) {
+      height: 50px;
+      /* Adjust the height to your preference */
+      overflow: hidden;
     }
   </style>
 </head>
@@ -240,7 +249,10 @@
     <div class="placeholder" id="placeholder6">
       <textarea placeholder="Mahalle"></textarea>
     </div>
-    <button class="bottomButton2" data-parselid="${data.parselId}">Değişiklileri Kaydet</button>
+    <div class="placeholder" id="placeholder7">
+      <textarea placeholder="Wkt"></textarea>
+    </div>
+    <button class="bottomButton2">Değişiklileri Kaydet</button>
   </div>
 
   <form>
